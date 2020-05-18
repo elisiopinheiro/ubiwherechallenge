@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 	"ubiwhere/model"
@@ -9,7 +8,7 @@ import (
 
 /*
 param: simu - channel for the simulator data samples
-function: generates 4 random variables as a data sample every second (simulating an external device)
+function: Generates 4 random variables as a data sample every second (simulating an external device)
  		  and adds it to the channel
 */
 func Simulator(simu chan model.SimuData) {
@@ -24,14 +23,18 @@ func Simulator(simu chan model.SimuData) {
 		// Add data sample to the channel
 		simu <- data
 
+		// Sleep for 1s
 		time.Sleep(1 * time.Second)
 	}
 }
 
 func CollectDataSample(simu chan model.SimuData) {
 	for {
+		// Collect data sample from the channel
 		dataSample := <-simu
-		fmt.Printf("V1: %d | V2: %d | V3: %d | V4: %d\n\n", dataSample.V1, dataSample.V2, dataSample.V3, dataSample.V4)
+
+		// Insert data sample into the database
+		Db.Create(&dataSample)
 
 		time.Sleep(1 * time.Second)
 	}

@@ -1,29 +1,27 @@
 package main
 
 import (
-	"fmt"
 	"time"
-	"ubiwhere/cmd"
 	"ubiwhere/controller"
 	"ubiwhere/model"
 )
-
+func init() {
+	controller.OpenDatabase()
+}
 func main() {
 	// CLI start
-	cmd.Execute()
+	//cmd.Execute()
 
-	// Create CPU and RAM channels
-	cpuc := make(chan float64)
-	ramc := make(chan float64)
-	simu := make(chan model.SimuData)
+	// Create external device simulator channel (capacity: 3)
+	simu := make(chan model.SimuData, 3)
 
-	go controller.GetInfo(cpuc, ramc)
+	go controller.GetCpuAndRamInfo()
 	go controller.Simulator(simu)
 	go controller.CollectDataSample(simu)
 
 	for {
-		time.Sleep(1 * time.Second)
+		time.Sleep(5 * time.Second)
 
-		fmt.Printf("CPU: %.2f%% | RAM: %.2fGb\n", <-cpuc, <-ramc)
+		//fmt.Printf("CPU: %.2f%% | RAM: %.2fGb\n", <-cpuc, <-ramc)
 	}
 }

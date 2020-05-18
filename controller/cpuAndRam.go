@@ -6,18 +6,17 @@ import (
 	"github.com/mackerelio/go-osstat/memory"
 	"os"
 	"time"
+	"ubiwhere/model"
 )
 
 /*
-param: c1 - channel for the cpu info
-param: c2 - channel for the ram info
-function: this function gets CPU & RAM info every second and adds them to each channel to be collected in the future
+function: Gets CPU & RAM info every second and adds them to the Database
 */
-func GetInfo(c1 chan float64, c2 chan float64) {
-	// Get CPU & RAM info every second and add them to each channel
-	for {
-		time.Sleep(1 * time.Second)
+func GetCpuAndRamInfo() {
 
+	// Get CPU & RAM info every second and add to database
+	for {
+		var info model.CpuAndRam
 		// Get CPU info
 		before, err := cpu.Get()
 		if err != nil {
@@ -31,7 +30,9 @@ func GetInfo(c1 chan float64, c2 chan float64) {
 			continue
 		}
 		total := float64(after.Total - before.Total)
-		c1 <- 100 - float64(after.Idle-before.Idle)/total*100
+
+		// Insert CPU info into the struct
+		info.CPU = 100 - float64(after.Idle-before.Idle)/total*100
 
 		// Get RAM info
 		mem, err := memory.Get()
@@ -39,6 +40,11 @@ func GetInfo(c1 chan float64, c2 chan float64) {
 			_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 			continue
 		}
-		c2 <- float64(mem.Used) / 1000000000
+
+		// Insert RAM info into the struct
+		info.RAM =float64(mem.Used) / 1000000000
+
+		// Insert CPU & RAM info to the DB
+		Db.Create(&info)
 	}
 }
