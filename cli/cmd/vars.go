@@ -77,16 +77,61 @@ func printLastNVars(args []string) {
 			fmt.Println("Invalid variable! Use: v1, v2, v3 and v4")
 			return
 		}
-		//fmt.Println("->", strings.ToLower(args[i]))
-		variables = append(variables, strings.ToLower(args[i]))
+
+		// append if not exists
+		_, found := Find(variables, strings.ToLower(args[i]))
+		if !found {
+			variables = append(variables, strings.ToLower(args[i]))
+		}
+
 	}
 
-	//var samples []model.SimuData
 	db := OpenDatabase()
 	rows, err := db.Table("simu_data").Order("id desc").Select(variables).Limit(i).Rows()
 
-	for rows.Next() {
+	// Number of columns
+	columns, _ := rows.Columns()
+	colNum := len(columns)
 
+
+	// Prepare a map array with the values
+	var results []map[string]interface{}
+	for rows.Next() {
+		// Prepare to read row using Scan
+		r := make([]interface{}, colNum)
+		for i := range r {
+			r[i] = &r[i]
+		}
+
+		// Read rows using Scan
+		err = rows.Scan(r...)
+
+		// Create a row map to store row's data
+		var row = map[string]interface{}{}
+		for i := range r {
+			row[columns[i]] = r[i]
+		}
+
+		// Append to the final results slice
+		results = append(results, row)
 	}
 
+	// Print the values
+	for i, _ := range results {
+		for k, v := range results[i] {
+			fmt.Printf("%s: %d | ", strings.ToUpper(k), v)
+		}
+		fmt.Println()
+	}
+}
+
+// Find takes a slice and looks for an element in it. If found it will
+// return it's key, otherwise it will return -1 and a bool of false.
+func Find(slice []string, val string) (int, bool) {
+	for i, item := range slice {
+		if item == val {
+			return i, true
+		}
+	}
+	return -1, false
 }
