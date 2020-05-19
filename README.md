@@ -12,7 +12,7 @@
 - [Acknowledgments](#acknowledgement)
 
 ## ⛏️ Built Using
-- [Golang](https://golang.org/) - v1.14
+- [Golang](https://golang.org/) - v1.14 (Required)
     - [Cobra](https://github.com/spf13/cobra)
     - [GORM](https://gorm.io/)
     - [Gin](https://github.com/gin-gonic/gin)
@@ -38,7 +38,7 @@ cd cli && go install ubiwhere
 
 ### Running
 
-Go to the simulator folder ``cd simulator`` and run it:
+Go to the simulator folder ``cd .. && cd simulator`` and run it:
 
 ```
 go run main.go
