@@ -17,6 +17,8 @@ func SetupRouter() *gin.Engine {
 	ubiwhere := router.Group("/ubiwhere")
 	{
 		ubiwhere.GET("/read/:n", getNMetrics)
+		ubiwhere.GET("/read/:n/vars", getNMetricsVars)
+		ubiwhere.GET("/avg/:n/vars", getNMetrics)
 	}
 
 	return router
@@ -24,4 +26,8 @@ func SetupRouter() *gin.Engine {
 
 func getNMetrics(c *gin.Context) {
 	controller.GetNMetrics(c)
+}
+
+func getNMetricsVars(c *gin.Context) {
+	controller.GetNMetricsVars(c)
 }
