@@ -50,7 +50,7 @@ Alternatively, you can build and run:
 go build main.go && ./main
 ```
 
-## 🏁 CLI - Commands <a name = "commands"></a>
+## CLI - Commands <a name = "commands"></a>
 
 Run commands insde ``cli``! 
 
