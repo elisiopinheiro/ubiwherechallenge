@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -24,15 +25,15 @@ import (
 // avgCmd represents the avg command
 var avgCmd = &cobra.Command{
 	Use:   "avg",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Read AVG of one or more variables",
+	Long: `Read avg: <ubiwhere read avg v1 v2> to read the AVG of the variables v1 and v2.
+Vars: v1, v2, v3 and v4.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("avg called")
+		if len(args) < 1 {
+			fmt.Println("Please insert the variables you want to read. (v1, v2, v3, v4)")
+			return
+		}
+		printAvgVars(args)
 	},
 }
 
@@ -48,4 +49,66 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// avgCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func printAvgVars(args []string) {
+
+	// Get what variables to read
+	var variables []string
+	for i := 0; i < len(args); i++ {
+		if strings.ToLower(args[i]) != "v1" && strings.ToLower(args[i]) != "v2" && strings.ToLower(args[i]) != "v3" && strings.ToLower(args[i]) != "v4" {
+			fmt.Println("Invalid variable! Use: v1, v2, v3 and v4")
+			return
+		}
+
+		// append if not exists
+		_, found := Find(variables, strings.ToLower(args[i]))
+		if !found {
+			variables = append(variables, "AVG("+strings.ToLower(args[i])+")")
+		}
+
+	}
+
+	db := OpenDatabase()
+	defer db.Close()
+	rows, err := db.Table("simu_data").Select(variables).Rows()
+	if err != nil {
+		fmt.Println("DB Error: ", err.Error())
+		return
+	}
+
+	// Number of columns
+	columns, _ := rows.Columns()
+	colNum := len(columns)
+
+
+	// Prepare a map array with the values
+	var results []map[string]interface{}
+	for rows.Next() {
+		// Prepare to read row using Scan
+		r := make([]interface{}, colNum)
+		for i := range r {
+			r[i] = &r[i]
+		}
+
+		// Read rows using Scan
+		err = rows.Scan(r...)
+
+		// Create a row map to store row's data
+		var row = map[string]interface{}{}
+		for i := range r {
+			row[columns[i]] = r[i]
+		}
+
+		// Append to the final results slice
+		results = append(results, row)
+	}
+
+	// Print the values
+	for i, _ := range results {
+		for k, v := range results[i] {
+			fmt.Printf("%s: %f | ", strings.ToUpper(k), v)
+		}
+		fmt.Println()
+	}
 }

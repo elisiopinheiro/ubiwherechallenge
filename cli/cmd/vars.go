@@ -25,13 +25,10 @@ import (
 // varsCmd represents the vars command
 var varsCmd = &cobra.Command{
 	Use:   "vars",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Read N metrics of one or more Variables",
+	Long: `Read vars: <ubiwhere read vars 3 v1 v2 v3> to read the last three data samples of the variables v1 v2 and v3.
+Maximum (metrics): 10.
+Vars: v1, v2, v3 and v4.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) <= 1 {
 			fmt.Println("Please insert how many metrics you want to read + the variables you want")
@@ -87,7 +84,12 @@ func printLastNVars(args []string) {
 	}
 
 	db := OpenDatabase()
+	defer db.Close()
 	rows, err := db.Table("simu_data").Order("id desc").Select(variables).Limit(i).Rows()
+	if err != nil {
+		fmt.Println("DB Error: ", err.Error())
+		return
+	}
 
 	// Number of columns
 	columns, _ := rows.Columns()
