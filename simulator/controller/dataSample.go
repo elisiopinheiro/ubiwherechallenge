@@ -141,6 +141,63 @@ func GetNMetricsVars(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": results})
 }
 
+func GetAvgVars(c *gin.Context) {
+
+	params := c.Request.URL.Query()
+
+	var variables []string
+	for k, v := range params {
+		if k == "var" {
+			for _, s := range v {
+				if strings.ToLower(s) != "v1" && strings.ToLower(s) != "v2" && strings.ToLower(s) != "v3" && strings.ToLower(s) != "v4" {
+					c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": "You passed an invalid variable! Use v1, v2, v3 or v4."})
+					return
+				}
+				// append if not exists
+				_, found := Find(variables, strings.ToLower(s))
+				if !found {
+					variables = append(variables, "AVG("+strings.ToLower(s)+")")
+				}
+			}
+		}
+	}
+
+	// Collect data from DB
+	rows, err := Db.Table("simu_data").Select(variables).Rows()
+	if err != nil {
+		fmt.Println("DB Error: ", err.Error())
+		return
+	}
+
+	// Number of columns
+	columns, _ := rows.Columns()
+	colNum := len(columns)
+
+	// Prepare a map array with the values
+	var results []map[string]interface{}
+	for rows.Next() {
+		// Prepare to read row using Scan
+		r := make([]interface{}, colNum)
+		for i := range r {
+			r[i] = &r[i]
+		}
+
+		// Read rows using Scan
+		err = rows.Scan(r...)
+
+		// Create a row map to store row's data
+		var row = map[string]interface{}{}
+		for i := range r {
+			row[columns[i]] = r[i]
+		}
+
+		// Append to the final results slice
+		results = append(results, row)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": results})
+}
+
 /*
 function: Takes a slice and looks for an element in it. If found it will
    	      return it's key, otherwise it will return -1 and a bool of false.

@@ -18,7 +18,7 @@ func SetupRouter() *gin.Engine {
 	{
 		ubiwhere.GET("/read/:n", getNMetrics)
 		ubiwhere.GET("/read/:n/vars", getNMetricsVars)
-		ubiwhere.GET("/avg/:n/vars", getNMetrics)
+		ubiwhere.GET("/avg", getAvgVars)
 	}
 
 	return router
@@ -30,4 +30,8 @@ func getNMetrics(c *gin.Context) {
 
 func getNMetricsVars(c *gin.Context) {
 	controller.GetNMetricsVars(c)
+}
+
+func getAvgVars(c *gin.Context) {
+	controller.GetAvgVars(c)
 }
