@@ -86,6 +86,33 @@ AVG(V1): 57.3826 | AVG(V2): 73.0005 |
 
 ---
 
+## 🖥 REST API <a name = "rest"></a>
+
+### Get the last N metrics of all variables:
+```
+localhost:8080/ubiwhere/read/3
+```
+This requests gets the last 3 metrics of all variables.
+
+### Get the last N metrics of one or more variables:
+```
+localhost:8080/ubiwhere/read/3/vars?var=v1&var=v2
+```
+This request would list the last 3 metrics of the variables V1 and V2
+
+
+### Get the AVG of the value on one or more variables:
+```
+localhost:8080/ubiwhere/avg?var=v1&var=v2
+```
+This requests gets the AVG of the variables V1 and V2
+
+NOTES: 
+- Any request with query param different than ``var`` is ignored.
+- Requests with var != v1, v2, v3 or v4 gets http response 400. (You need to use valid variables)
+
+---
+
 ## Project Structure <a name = "project_structure"></a>
 
 - **/**

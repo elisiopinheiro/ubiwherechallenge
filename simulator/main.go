@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"time"
 	"ubiwhere/controller"
 	"ubiwhere/model"
 	"ubiwhere/rest"
@@ -25,10 +23,4 @@ func main() {
 	r := rest.SetupRouter()
 	_ = r.Run(":8080")
 
-	fmt.Println("Simulator running...")
-
-	// Keep app running
-	for {
-		time.Sleep(1 * time.Second)
-	}
 }
