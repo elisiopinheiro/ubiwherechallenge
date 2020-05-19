@@ -13,7 +13,7 @@ function: opens the database connection to use and Migrates all the present sche
  */
 func OpenDatabase() {
 	var err error
-	Db, err = gorm.Open("sqlite3", "database.db")
+	Db, err = gorm.Open("sqlite3", "../database.db")
 	if err != nil {
 		panic("failed to connect database")
 	}

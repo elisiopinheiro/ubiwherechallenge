@@ -7,10 +7,10 @@ import (
 
 /*
 function: Opens a connection to the DB
-returns: *gorm.DB connection pointer
+returns: database connection
  */
 func OpenDatabase() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "../simulator/database.db")
+	db, err := gorm.Open("sqlite3", "../database.db")
 	if err != nil {
 		panic("failed to connect database")
 	}
