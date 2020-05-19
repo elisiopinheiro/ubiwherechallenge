@@ -122,8 +122,12 @@ NOTES:
     - **CLI:**
         - **Model:** has the Data Samples model
         - **cmd:** the CLI funcions and configuration
+    - **Database**
     
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
 - Since this is a challenge, database concurrency was not taken in consideration, although GORM manages this pretty well.
-- References
+- I prefer a structured project because it helps understand and organize things better. 
+You can check my project structure [above](#project_structure).
+- References:
+    - https://github.com/mackerelio/go-osstat (CPU & RAM info)
