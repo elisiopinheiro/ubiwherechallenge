@@ -51,6 +51,10 @@ func init() {
 	// avgCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
+/*
+function: Prints the average of the variables passed in args
+params: args
+ */
 func printAvgVars(args []string) {
 
 	// Get what variables to read
@@ -69,6 +73,7 @@ func printAvgVars(args []string) {
 
 	}
 
+	// Get DB Connection
 	db := OpenDatabase()
 	defer db.Close()
 	rows, err := db.Table("simu_data").Select(variables).Rows()

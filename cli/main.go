@@ -18,5 +18,6 @@ package main
 import "ubiwhere/cmd"
 
 func main() {
+	// Start CLI
 	cmd.Execute()
 }

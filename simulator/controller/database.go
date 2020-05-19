@@ -8,6 +8,9 @@ import (
 
 var Db *gorm.DB
 
+/*
+function: opens the database connection to use and Migrates all the present schemas
+ */
 func OpenDatabase() {
 	var err error
 	Db, err = gorm.Open("sqlite3", "database.db")

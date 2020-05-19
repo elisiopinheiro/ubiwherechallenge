@@ -52,6 +52,10 @@ func init() {
 	// varsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
+/*
+function: Prints the last N metrics of the passed variables in argument
+params: args - N, (v1, v2, v3, v4)
+ */
 func printLastNVars(args []string) {
 
 	// Check if passed first arg is a number
@@ -83,8 +87,11 @@ func printLastNVars(args []string) {
 
 	}
 
+	// Get DB Connection
 	db := OpenDatabase()
 	defer db.Close()
+
+	// Collect data from DB
 	rows, err := db.Table("simu_data").Order("id desc").Select(variables).Limit(i).Rows()
 	if err != nil {
 		fmt.Println("DB Error: ", err.Error())
@@ -127,8 +134,11 @@ func printLastNVars(args []string) {
 	}
 }
 
-// Find takes a slice and looks for an element in it. If found it will
-// return it's key, otherwise it will return -1 and a bool of false.
+/*
+function: Takes a slice and looks for an element in it. If found it will
+   	      return it's key, otherwise it will return -1 and a bool of false.
+params: slice - the slice to look into, val - the value to look for
+ */
 func Find(slice []string, val string) (int, bool) {
 	for i, item := range slice {
 		if item == val {

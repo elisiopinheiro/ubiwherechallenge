@@ -51,12 +51,16 @@ func init() {
 	// readCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
+/*
+function: Prints last N metrics of all variabales (v1,v2,v3 and v4)
+params: args
+*/
 func printLastN(args []string) {
 
 	// Check if passed arg is a number
 	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		fmt.Println("invalid number! (Use: ubiwhere read 3)")
+		fmt.Println("invalid! (Use: ubiwhere read -h for help)")
 		return
 	}
 
@@ -66,10 +70,15 @@ func printLastN(args []string) {
 		return
 	}
 
-	var metrics []model.SimuData
+	// Get DB Connection
 	db := OpenDatabase()
+	defer db.Close()
+
+	// Get metrics from database and store them in the array
+	var metrics []model.SimuData
 	db.Order("id desc").Limit(args[0]).Find(&metrics)
 
+	// Print collected data
 	for _, s := range metrics {
 		fmt.Printf("V1: %d | V2: %d | V3: %d | V4: %d\n", s.V1, s.V2, s.V3, s.V4)
 	}

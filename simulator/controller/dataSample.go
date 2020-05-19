@@ -7,9 +7,9 @@ import (
 )
 
 /*
-param: simu - channel for the simulator data samples
 function: Generates 4 random variables as a data sample every second (simulating an external device)
  		  and adds it to the channel
+param: simu - channel for the simulator data samples
 */
 func Simulator(simu chan model.SimuData) {
 	var data model.SimuData
@@ -28,6 +28,10 @@ func Simulator(simu chan model.SimuData) {
 	}
 }
 
+/*
+function: collects the data samples every second form the channel
+params: channel to get the data samples from
+ */
 func CollectDataSample(simu chan model.SimuData) {
 	for {
 		// Collect data sample from the channel
