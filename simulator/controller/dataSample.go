@@ -49,6 +49,9 @@ func CollectDataSample(simu chan model.SimuData) {
 	}
 }
 
+/*
+function: gets the last N metrics and sends them through http repsonse
+ */
 func GetNMetrics(c *gin.Context) {
 
 	// Get the number of metrics to read
@@ -59,6 +62,7 @@ func GetNMetrics(c *gin.Context) {
 		return
 	}
 
+	// Limit to 10 metrics
 	if num > 10 {
 		c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": "Max 10 metrics!"})
 		return
@@ -68,9 +72,13 @@ func GetNMetrics(c *gin.Context) {
 	var metrics []model.SimuData
 	Db.Order("id desc").Limit(num).Find(&metrics)
 
+	// Send response
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": metrics})
 }
 
+/*
+function: gets last N metrics for passed variables in query string
+ */
 func GetNMetricsVars(c *gin.Context) {
 
 	// Get the number of metrics to read
@@ -81,13 +89,16 @@ func GetNMetricsVars(c *gin.Context) {
 		return
 	}
 
+	// Limit to 10 metrics
 	if num > 10 {
 		c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": "Max 10 metrics!"})
 		return
 	}
 
+	// Gets passed query string
 	params := c.Request.URL.Query()
 
+	// Build an array with the wanted variables (cicle the params to get the valid variables and ignores duplicated)
 	var variables []string
 	for k, v := range params {
 		if k == "var" {
@@ -138,6 +149,7 @@ func GetNMetricsVars(c *gin.Context) {
 		results = append(results, row)
 	}
 
+	// Send response
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": results})
 }
 
@@ -145,6 +157,7 @@ func GetAvgVars(c *gin.Context) {
 
 	params := c.Request.URL.Query()
 
+	// Build an array with the wanted variables (cicle the params to get the valid variables and ignores duplicated)
 	var variables []string
 	for k, v := range params {
 		if k == "var" {

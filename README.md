@@ -119,6 +119,7 @@ NOTES:
     - **Simulator:**
         - **Model:** contais the data models for the Data Samples and CPU&RAM Info
         - **Controller:** contains all the functionalities/funcions of the app
+        - **Rest:** router (gin) for the REST API
     - **CLI:**
         - **Model:** has the Data Samples model
         - **cmd:** the CLI funcions and configuration
